@@ -27,7 +27,7 @@ for cat in cats:
 	for a in allDocs:
 		elems = FilteredElementCollector(a).OfCategoryId(cat.Id)
 		allElements.append(elems)
-		
+
 #Flatten
 elem = [item for sublist in allElements for item in sublist]
 
@@ -36,7 +36,7 @@ for e in elem:
     for parName in parNameList:
         p = e.LookupParameter(parName)
 
-        
+
         if p != None:
             name.append(p.Definition.Name)
             value.append(p.HasValue)
