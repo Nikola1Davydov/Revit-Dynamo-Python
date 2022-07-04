@@ -1,10 +1,73 @@
-from Autodesk.Revit.DB import *
-from RevitServices.Persistence import DocumentManager
-from Autodesk.Revit.ApplicationServices import *
-from Autodesk.Revit.Attributes import *
+__author__ = "Nikolai Davydov"
+__title__ = "Copy Ebene"
+
+import clr
+import sys
+import System
+clr.AddReference("RevitAPIUI")
 from Autodesk.Revit.UI import *
 from Autodesk.Revit.UI.Selection import *
 
+clr.AddReference("RevitServices")
+import RevitServices
+from RevitServices.Persistence import DocumentManager
 doc = DocumentManager.Instance.CurrentDBDocument
+uidoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument
 
-Element_selection = SelectElement(doc)
+clr.AddReference("RevitAPI")
+from Autodesk.Revit.DB import *
+
+Dialogmessage = ""
+
+def GetParameterValue(param):
+    if "Double" in str(param.StorageType):
+        return param.AsValueString()
+    elif "Integer" in str(param.StorageType):
+        return param.AsValueString()
+    elif "String" in str(param.StorageType):
+        return param.AsValueString()
+    elif "None" in str(param.StorageType):
+        return param.AsValueString()
+    elif "ElementId" in str(param.StorageType):
+        return param.AsElementId().IntegerValue.ToString()
+
+
+
+class wallPickFilter(ISelectionFilter):
+    def __init__(self):
+        pass
+    def AllowElement(self, element):
+        if Element.Category.Name == "Walls":
+            return True
+        else:
+            return False
+        #return element.Category.Id.IntergerValue.Equals((int)BuiltInCategory.OST_Walls)
+    def AllowReference(self, element):
+        return False
+
+pickedref = uidoc.Selection.PickObject(ObjectType.Element, wallPickFilter(), "Please select a wall")
+refSet = uidoc.Selection.PickObjects(ObjectType.Element, wallPickFilter(), "Please select a wall")
+
+firstElement = uidoc.Document.GetElement(pickedref)
+firstElement_parameter_BaseOffset = firstElement.get_Parameter(BuiltInParameter.WALL_BASE_OFFSET)
+firstElement_parameter_TopOffset = firstElement.get_Parameter(BuiltInParameter.WALL_TOP_OFFSET)
+firstElement_parameter_LevelBaseOffset = firstElement.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT)
+firstElement_parameter_LevelTopOffset = firstElement.get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE)
+firstElement_parameter_ManuellOffset = firstElement.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM)
+
+for r in refSet:
+    targetElement = uidoc.Document.GetElement(r)
+    targetElement_parameter_BaseOffset = firstElement.get_Parameter(BuiltInParameter.WALL_BASE_OFFSET)
+    targetElement_parameter_TopOffset = firstElement.get_Parameter(BuiltInParameter.WALL_TOP_OFFSET)
+    targetElement_parameter_LevelBaseOffset = firstElement.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT)
+    targetElement_parameter_LevelTopOffset = firstElement.get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE)
+    targetElement_parameter_ManuellOffset = firstElement.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM)
+
+    targetElement_parameter_BaseOffset.SetValueString(GetParameterValue(firstElement_parameter_BaseOffset))
+    targetElement_parameter_LevelBaseOffset.Set(targetElement_parameter_LevelBaseOffset.AsElementId())
+    targetElement_parameter_LevelTopOffset.Set(firstElement_parameter_LevelTopOffset.AsElementId())
+
+    if (targetElement_parameter_ManuellOffset.UserModifiable == False):
+        targetElement_parameter_ManuellOffset.SetValueString(GetParameterValue(firstElement_parameter_ManuellOffset))
+    else:
+        targetElement_parameter_TopOffset.SetValueString(GetParameterValue(firstElement_parameter_TopOffset))
