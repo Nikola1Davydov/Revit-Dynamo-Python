@@ -16,8 +16,8 @@ doc = DocumentManager.Instance.CurrentDBDocument
 cats = UnwrapElement(IN[0])
 parNameList = UnwrapElement(IN[1])
 
-allDocs, allElements, allElementsType = [], [], []
-name, value, pType, elemType = [], [], [], []
+allDocs, allElements = [], []
+name, value = [], []
 
 # Code
 allDocs.append(doc)
