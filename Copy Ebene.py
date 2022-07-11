@@ -64,8 +64,14 @@ with db.Transaction("Copy Ebene"):
 
 
             targetElement_parameter_BaseOffset.SetValueString(GetParameterValue(firstElement_parameter_BaseOffset))
+<<<<<<< HEAD
             targetElement_parameter_LevelBaseOffset.Set(firstElement_parameter_LevelBaseOffset.AsElementId())
             targetElement_parameter_LevelTopOffset.Set(firstElement_parameter_LevelTopOffset.AsElementId())
+=======
+            targetElement_parameter_LevelBaseOffset.Set(targetElement_parameter_LevelBaseOffset.AsElementId())
+            targetElement_parameter_LevelTopOffset.Set(firstElement_parameter_LevelTopOffset.AsElementId())
+
+>>>>>>> 4b2e636a5ba1711b8fa3363ea42e698387ff800b
             if (targetElement_parameter_ManuellOffset.UserModifiable == False):
                 targetElement_parameter_ManuellOffset.SetValueString(GetParameterValue(firstElement_parameter_ManuellOffset))
             else:
