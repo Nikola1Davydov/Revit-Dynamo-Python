@@ -9,6 +9,8 @@ clr.AddReference('RevitAPIUI')
 from Autodesk.Revit.DB import *
 from Autodesk.Revit.UI import UIDocument, Selection
 from Autodesk.Revit.UI.Selection import ISelectionFilter, ObjectType
+import Custom_ISelectionFilter_ByID from
+
 
 uiapp = __revit__
 uidoc = uiapp.ActiveUIDocument

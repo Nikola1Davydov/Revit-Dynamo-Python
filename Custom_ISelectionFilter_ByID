@@ -1,0 +1,10 @@
+class CustomISelectionFilter(ISelectionFilter):
+    def __init__(self, category_id):
+        self.category_id = category_id
+    def AllowElement(self, e):
+        if e.Category.Id.IntegerValue == -2000011:
+            return True
+        else:
+            return False
+    def AllowReference(self, ref, point):
+        return False
