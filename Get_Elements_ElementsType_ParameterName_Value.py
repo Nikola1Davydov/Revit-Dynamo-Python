@@ -18,7 +18,6 @@ Prefix = UnwrapElement(IN[1])
 
 allDocs, allElements, allElementsType = [], [], []
 name, value, Typname, Typvalue = [], [], [], []
-elemType_lst , eType, elemTypeId = [], [], []
 # Code
 allDocs.append(doc)
 
@@ -29,7 +28,7 @@ for cat in cats:
         allElements.append(elems)
         elemType = FilteredElementCollector(a).OfCategoryId(cat.Id).WhereElementIsElementType().ToElements()
         allElementsType.append(elemType)
-        elemTypeId.append(elemType.Id)
+        #elemTypeId.append(elemType.Id)
 #elemTypeId = [a.Id for a in allElementsType]
 #Flatten
 elem = [item for sublist in allElements for item in sublist]
@@ -45,19 +44,17 @@ for e in elem:
             value.append(parName.HasValue)
 
 #Get Type Parameters
-for e in elemTyp:
-    parNameList = e.GetOrderedParameters()
-    elemType_lst.append(e.Id)
+for el in elemTyp:
+    parNameList = el.GetOrderedParameters()
     for parName in parNameList:
         pName = parName.Definition.Name
         if pName.startswith(Prefix):
             Typname.append(pName)
             Typvalue.append(parName.HasValue)
+            #elemType_lst.append(el)
 
-for el in elemType_lst:
-	if el.Id in type_ids:
-		eType.append(e)
+name_gesamt = name + Typname
+value_gesamt = value + Typvalue
 
 # Output
-#OUT = elem, name, value
-OUT = elem, name, value, Typname, Typvalue, eType
+OUT = elem, name_gesamt, value_gesamt
